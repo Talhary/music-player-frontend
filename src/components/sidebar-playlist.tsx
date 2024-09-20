@@ -1,0 +1,77 @@
+
+import { Clock } from "lucide-react"
+import { fetchSongs, selectSongs, selectSongsError, selectSongsStatus } from "../stores/playListSongs"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../store"
+import { AppDispatch } from "../store"
+import { useEffect } from "react"
+import { useToast } from "../hooks/use-toast"
+import { Button } from "../components/ui/button"
+import { ToastAction } from "../components/ui/toast"
+type Song = {
+  id: string
+  name: string
+  artist: string
+  imageUrl: string
+  duration: string
+}
+
+
+
+export function SidebarPlaylist() {
+  const {toast } = useToast();
+  const dispatch: AppDispatch = useDispatch();
+  const sampleSongs:Song[] = useSelector((state: RootState) => selectSongs(state));
+  const status = useSelector((state: RootState) => selectSongsStatus(state));
+  const error = useSelector((state: RootState) => selectSongsError(state));
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchSongs('id'));
+    }
+  }, [dispatch, status]);
+  if (status === 'loading') return <div>
+       Loading..
+  </div>;
+  if (status === 'failed') return <div>
+    <Button
+      variant="outline"
+      onClick={() => {
+        toast({
+          title: "ERROR",
+          description: {error},
+          action: (
+            <ToastAction altText="Error">Undo</ToastAction>
+          ),
+        })
+      }}
+    >
+      
+    </Button>
+  </div>;
+  return (
+    <div className="w-64 h-screen bg-gray-900 text-white p-4 overflow-y-auto">
+      <h2 className="text-xl font-bold mb-4">Playlist</h2>
+      <ul className="space-y-2">
+        {sampleSongs.map((song) => (
+          <li key={song.id} className="flex items-center space-x-2 hover:bg-gray-800 p-2 rounded">
+            <img  
+              src={song.imageUrl}
+              alt={`${song.name} album cover`}
+              width={40}
+              height={40}
+              className="rounded"
+            />
+            <div className="flex-grow min-w-0">
+              <p className="text-sm font-medium truncate">{song.name}</p>
+              <p className="text-xs text-gray-400 truncate">{song.artist}</p>
+            </div>
+            <span className="text-xs text-gray-400 flex items-center">
+              <Clock className="w-3 h-3 mr-1" />
+              {song.duration}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
