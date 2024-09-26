@@ -10,7 +10,7 @@ import SongsHistory from  './stores/songs-history'
 import User from './stores/user'
 export const store = configureStore({
   reducer: {
-    playlists:playLists,
+  
     songs: playListsSongsReducer,
     song:Song,
     PlayLists:PlayLists,

@@ -1,26 +1,16 @@
-import {
-  fetchSongs,
-  selectSongs,
-  selectSongsError,
-  selectSongsStatus,
-} from "../stores/playListSongs";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { AppDispatch } from "../store";
-import { useEffect, useState } from "react";
-import { useToast } from "../hooks/use-toast";
-import { ToastAction } from "../components/ui/toast";
-import type { Song as SongType } from "../types/song";
+import { useEffect } from "react";
+
+
 
 import { Button } from "../components/ui/button";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { Slider } from "../components/ui/slider";
 import {
-  Home,
-  Search,
-  Library,
-  ChevronLeft,
-  ChevronRight,
+
   Play,
   SkipBack,
   SkipForward,
@@ -29,46 +19,26 @@ import {
   Volume2,
   Loader2,
 } from "lucide-react";
-import { fetchSongFromId } from "../stores/song";
+
 import AudioPlayer from "../lib/player";
-import { fetchPlaylists } from "../stores/playLists";
 import { PlaylistSongsComponent } from "./songs-list";
-import { fetchPlaylistSongs } from "../stores/play-list-songs";
-import { Input } from "../components/ui/input";
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { MusicSearch } from "./music-search";
+
 import { DirectSongs } from "./directSongs";
-import SongsHistoryList from "../components/music-history-list";
 import { HistoryDropdown } from "./history-dropdown";
 import { HeaderComponent } from "./header";
-import { useNavigate } from "react-router";
 import { updateUser } from "../stores/user";
 export function MusicPlayerFrontPage() {
-  const { toast } = useToast();
   const dispatch: AppDispatch = useDispatch();
-  const songs: SongType[] = useSelector((state: RootState) =>
-    selectSongs(state)
-  );
-  const status = useSelector((state: RootState) => selectSongsStatus(state));
-  const errorOfSelectSongs = useSelector((state: RootState) =>
-    selectSongsError(state)
-  );
-  const { playlists, loading, error } = useSelector(
-    (state: RootState) => state.playlists
-  );
-  const { search, type } = useSelector((state: RootState) => state.searchState);
+
+ 
+ 
+  const { type } = useSelector((state: RootState) => state.searchState);
   const tracks = useSelector(
     (state: RootState) => state.directSongsSearch.songs
   ); // Corrected to match the slice name
 
-  const [splaylists, setPlayLists] = useState(playlists);
-  useEffect(() => {
-    setPlayLists(playlists);
-  }, [playlists]);
-  useEffect(() => {
-    if (status === "idle") {
-    }
-  }, []);
+  
+
   useEffect(()=>{
    const token = document.cookie?.split(';')?.map(i => i.trim())?.find(i => i.startsWith('token='))?.split('=')[1] as string || '';
 
@@ -90,21 +60,7 @@ export function MusicPlayerFrontPage() {
     };
     if(token)authenticate(token)
   },[])
-  if (status === "failed")
-    return (
-      <div>
-        <Button
-          variant="outline"
-          onClick={() => {
-            toast({
-              title: "ERROR",
-              description: { error },
-              action: <ToastAction altText="Error">Undo</ToastAction>,
-            });
-          }}
-        ></Button>
-      </div>
-    );
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <div className="flex max-md:flex-col flex-1 overflow-hidden">
@@ -116,30 +72,12 @@ export function MusicPlayerFrontPage() {
             <HeaderComponent/>
             <div className="px-3  py-1    space-y-2 ">
               <div className="grid grid-cols-3 gap-4">
-                {type == "Playlists" &&
-                  splaylists.map((playlist) => (
-                    <Button
-                      key={playlist.playlistId}
-                      variant="secondary"
-                      className="h-16 justify-start space-x-4"
-                      onClick={() => {
-                        dispatch(fetchPlaylistSongs(playlist.playlistId));
-                      }}
-                    >
-                      <img
-                        src={playlist.thumbnailUrl}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <span>{playlist.title}</span>
-                    </Button>
-                  ))}
+               
               </div>
-              {status=='loading'? 
-                <div className="flex justify-center items-center h-full">
-                  <Loader2 className="h-16 w-16 animate-spin" />
-                </div>
+          
+                
               
-              : <div  className=" ">
+               <div  className=" ">
                 {tracks.length == 0 ? (
                   <h2 className="text-2xl font-semibold">
                     Please Search Song{" "}
@@ -150,7 +88,8 @@ export function MusicPlayerFrontPage() {
 
                 {type == "Playlists" && <PlaylistSongsComponent />}
                 {type == "Song" && <DirectSongs />}
-              </div>}
+              </div>
+              
             </div>
           </ScrollArea>
         </main>

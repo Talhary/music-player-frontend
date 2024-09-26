@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
-import { updateUser, clearUser } from '../stores/user';
+import { useDispatch} from "react-redux";
+import { AppDispatch } from "../store";
+import { updateUser } from '../stores/user';
 import { useNavigate } from "react-router";
 function App() {
   const [msg, setMsg] = useState("Authenticating");
@@ -41,9 +41,7 @@ function App() {
     };
     if(token)authenticate(token)
 
-    // Optionally, redirect to another page
-    // window.location.href = '/new-page';  // Replace with your desired redirect URL
-  }, []); // Empty dependency array ensures the effect runs only once after initial render
+  }, []); 
 
   return (
     <div>

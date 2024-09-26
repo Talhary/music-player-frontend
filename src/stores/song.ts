@@ -31,11 +31,12 @@ export const fetchSongFromId = createAsyncThunk<typeSong, string>(
       if (user.error) throw new Error('Something went wrong while fetching the user');
       if (!user.isLoggedIn) throw new Error('Please log in to continue');
       const { data } = await axios.get(
-        `http://localhost:5000/video/info?url=https://music.youtube.com/watch?v=${currentId}&token=${token}`
+        `http://localhost:5000/video/info?url=https://www.youtube.com/watch?v=${currentId}&token=${token}`
       );
+      console.log(data.url)
       return data;
     } catch (err: any) {
-      console.log(err)
+      
       // If axios or the async function fails, it will be caught here
       return rejectWithValue(err.response?.data?.message || err.message);
     }

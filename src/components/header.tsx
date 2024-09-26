@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "../components/ui/button";
-import { Music, UserPlus, LogIn } from "lucide-react";
+import { Music } from "lucide-react";
 // Assuming MusicSearch is imported from another file
 import { MusicSearch } from "./music-search";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,10 +9,7 @@ import { AppDispatch, RootState } from "../store";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
+
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { clearUser } from "../stores/user";

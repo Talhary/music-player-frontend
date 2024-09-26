@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import type { RootState } from '../store';
 import type {Song} from '../types/song'
 // Define the type for the slice state
@@ -17,45 +17,10 @@ const initialState: SongsState = {
 };
 
 // Create an async thunk for fetching songs
-export const fetchSongs = createAsyncThunk<Song[], string >(
+export const fetchSongs = createAsyncThunk(
   'songs/fetchSongs',
-  async (playlistId) => {
-    return [{
-        id: "1",    
-        name: "song 1",
-        artist: "Queen",
-        imageUrl: "/placeholder.svg?height=40&width=40",
-        duration: "5:55",
-        url:'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg'
-      },{
-        id: "2",
-        name: "song 2",
-        artist: "Queen",
-        imageUrl: "/placeholder.svg?height=40&width=40",
-        duration: "5:55",
-        url:'https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3'
-
-      }
-,{
-    id: "3",
-    name: "song 3",
-    artist: "Queen",
-    imageUrl: "/placeholder.svg?height=40&width=40",
-    duration: "5:55",
-    url:'https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3'
-
-  }
-,{
-    id: "4",
-    name: "song 4",
-    artist: "Queen",
-    imageUrl: "/placeholder.svg?height=40&width=40",
-    duration: "5:55",
-    url:'https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3'
-
-  }
-
-]
+  async () => {
+     return null
   }
 );
 
@@ -69,10 +34,7 @@ const songsSlice = createSlice({
       .addCase(fetchSongs.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchSongs.fulfilled, (state, action: PayloadAction<Song[]>) => {
-        state.status = 'succeeded';
-        state.songs = action.payload;
-      })
+     
       .addCase(fetchSongs.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch songs';

@@ -14,21 +14,20 @@ export interface Playlist {
   }
   
   export type Song = {
-    err:boolean,
-    id: string;
+    youtubeId: string;
     title: string;
-    author: {
-        name:string
+    artists: {
+      name: string;
+      id: string;
+    }[];
+    album: string;
+    thumbnailUrl: string;
+    duration: {
+      label: string;
+      totalSeconds: number;
     };
-    imageUrl: string;
-    duration: string;
-    thumbnails:{
-       url:string,
-       width:string,
-       height:string
-    }[],
+    isExplicit: boolean;
     url:string;
-    videoId:string;
   };
   export interface Artist {
     name: string;

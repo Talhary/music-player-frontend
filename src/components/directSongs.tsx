@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPlaylistSongs } from '../stores/play-list-songs'; // Update the correct import path
 import { RootState, AppDispatch } from '../store';
 import { Button } from '../components/ui/button'; // Assuming you have a Button component
 import { Play } from 'lucide-react'; // Assuming you have this icon available
