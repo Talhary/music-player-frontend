@@ -15,7 +15,7 @@ const dispatch:AppDispatch = useDispatch()
       </div>
       <ul className="divide-y divide-gray-200">
         {tracks.map((track) => (
-          <li key={track.id} onClick={()=>{
+          <li key={track.videoId} onClick={()=>{
             dispatch(fetchSongFromId(track.videoId))
           }} className="flex items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition duration-150 ease-in-out">
             <div className="flex-shrink-0 mr-4">
@@ -29,7 +29,7 @@ const dispatch:AppDispatch = useDispatch()
               <p className="text-sm text-gray-500 truncate">{track.author.name}</p>
             </div>
             <div className="ml-4 flex-shrink-0">
-              <span className="text-sm text-gray-500">{track.duration}</span>
+              <span className="text-sm text-gray-500">{track.lengthSeconds}</span>
             </div>
           </li>
         ))}

@@ -23,14 +23,15 @@ export const PlaylistSongsComponent: React.FC = () => {
         <div key={i} className="space-y-3">
           <div className="aspect-square bg-muted relative">
             <img
-              src={song.thumbnailUrl}
+              src={song.thumbnails[0].url}
               alt={`Album cover ${i + 1}`}
               className="rounded-md object-cover w-full h-full"
             />
             <Button
               onClick={() => {
                 // Placeholder for the fetch function; update with your actual function
-                fetchSongFromId(song.youtubeId);
+                if(song?.videoId)
+                fetchSongFromId(song?.videoId);
                 // dispatch(fetchSongFromId(song.youtubeId)); // Uncomment and replace with the actual function
               }}
               size="icon"
@@ -40,9 +41,9 @@ export const PlaylistSongsComponent: React.FC = () => {
             </Button>
           </div>
           <div className="space-y-1 text-sm">
-            <h3 className="font-medium leading-none">{song.title}</h3>
+            <h3 className="font-medium leading-none">{song.name}</h3>
             <p className="text-xs text-muted-foreground">
-              {song.artists.map((artist) => artist.name).join(', ')}
+              {song.artist.name}
             </p>
           </div>
         </div>

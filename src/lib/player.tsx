@@ -31,12 +31,13 @@ const AudioPlayer = () => {
   
   const [song, setSong] = useState(songF);
   const dispatch: AppDispatch = useDispatch();
+  
   useEffect(() => {
     
     if (!songF) return;
     console.log(songF)
     if (audioRef.current) audioRef.current.pause();
-    if (songsHistory.filter((el) => el.youtubeId == songF.youtubeId).length == 0) {
+    if (songsHistory.filter((el) => el.videoId == songF.videoId).length == 0) {
       dispatch(addItemToSearchHistory(songF));
     }
     setSong(songF);
@@ -53,20 +54,53 @@ const AudioPlayer = () => {
     }
   }, [isPlaying]);
 
-  
+
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
     }
   };
-
+  useEffect(() => {
+    if (!songF) return;
+  
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0; // Reset playback
+      setAudioLoading(true);
+    }
+  
+    setSong(songF);
+  }, [songF]);
+  useEffect(() => {
+    if (audioRef.current) {
+      const handleCanPlay = () => setAudioLoading(false);
+      audioRef.current.addEventListener("canplay", handleCanPlay);
+  
+      return () => {
+        audioRef.current?.removeEventListener("canplay", handleCanPlay);
+      };
+    }
+  }, [audioRef]);
   const handleVolumeChange = (e: any) => {
     if (audioRef.current) {
       audioRef.current.volume = Number(e[0]) / 100;
     }
   };
-
+  useEffect(() => {
+    if (audioRef.current) {
+      const handleLoadedMetadata = () => {
+        if (audioRef.current?.duration) {
+          setCurrentTime(0); // Reset slider on new song
+        }
+      };
+      audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
+  
+      return () => {
+        audioRef.current?.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      };
+    }
+  }, [audioRef]);
   const handlePlayPauseClick = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -83,29 +117,30 @@ const AudioPlayer = () => {
       audioRef.current.volume = audioRef.current.volume > 0 ? 0 : 1;
     }
   };
+if(error)return <div>{error}</div>
 if(state=='failed') return <div>
+
     Please Login to Continue
    </div>
-  return (
+if(!song?.url) return <div>Unable to get the source</div>
+return (
     <div className="">
       
       {song && (
         
         <audio
-          ref={audioRef}
-          src={song.url}
-          onTimeUpdate={handleTimeUpdate}
-          
-          controls
-          className="hidden"
-          autoPlay
-          onLoad={() => {
-            setAudioLoading(true);
-          }}
-          onPlaying={() => {
-            setAudioLoading(false);
-          }}
-        />
+        ref={audioRef}
+        src={song.url}
+        onTimeUpdate={handleTimeUpdate}
+        onError={() => {
+          setAudioLoading(false);
+          console.error("Audio failed to load.");
+        }}
+        onPlaying={() => setAudioLoading(false)}
+        controls
+        className="hidden"
+        autoPlay
+      />
       )}
       { state == "loading" && (
         <div className="w-full flex items-center h-16 justify-center">
@@ -120,7 +155,7 @@ if(state=='failed') return <div>
                 <div className="flex items-center space-x-4">
                   <div className="w-16 max-md:w-1/3 h-16 bg-muted relative rounded-md overflow-hidden">
                     <img
-                      src={song.thumbnailUrl}
+                      src={song.thumbnails[0]?.url}
                       alt="Album cover"
                       className="object-cover"
                     />
@@ -128,7 +163,7 @@ if(state=='failed') return <div>
                   <div>
                     <h3 className="font-medium leading-none">{song.title}</h3>
                     <p className="text-xs text-muted-foreground">
-                      {song.artists[0].name}
+                      {song.author.name}
                     </p>
                   </div>
                 </div>
@@ -162,7 +197,7 @@ if(state=='failed') return <div>
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        dispatch(fetchNextSong(song.youtubeId));
+                        dispatch(fetchNextSong(song.videoId));
                       }}
                     >
                       <SkipForward className="h-4 w-4" />
@@ -175,9 +210,9 @@ if(state=='failed') return <div>
                     min={0}
                     max={audioRef.current?.duration || 0}
                     value={[currentTime]}
-                    onChange={(e: any) => {
+                    onValueChange={(e: any) => {
                       if (audioRef.current) {
-                        const newTime = Number(e.target.value);
+                        const newTime = Number(e[0]);
                         audioRef.current.currentTime = newTime;
                         setCurrentTime(newTime);
                       }

@@ -24,6 +24,7 @@ export function MusicSearch() {
     if(type == 'Playlists'){
       dispatch(fetchPlaylists(search));
     }else{
+      console.log(search)
       dispatch(fetchDirectSongs(search))
     }
     

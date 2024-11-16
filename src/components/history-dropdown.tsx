@@ -34,17 +34,17 @@ export function HistoryDropdown() {
               <DropdownMenuItem
                 key={i}
                 onSelect={() => {
-                  dispatch(fetchSongFromId(track.youtubeId))
+                  dispatch(fetchSongFromId(track.videoId))
                   setIsOpen(false)
                 }}
               >
                 <div className="flex items-center w-full">
-                  <img src={track?.thumbnailUrl} className="h-6 w-6 mr-2" alt={track.title} />
+                  <img src={track?.thumbnails[0].url} className="h-6 w-6 mr-2" alt={track.title} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{track.title}</p>
-                    <p className="text-xs text-gray-500 truncate">{track.artists[0].name}</p>
+                    <p className="text-xs text-gray-500 truncate">{track.author.name}</p>
                   </div>
-                  <span className="text-xs text-gray-500 ml-2">{track.duration.totalSeconds}</span>
+                  <span className="text-xs text-gray-500 ml-2">{track.lengthSeconds}</span>
                 </div>
               </DropdownMenuItem>
             ))}
@@ -56,22 +56,22 @@ export function HistoryDropdown() {
           <li
             key={i}
             onClick={() => {
-              dispatch(fetchSongFromId(track.youtubeId))
+              dispatch(fetchSongFromId(track.videoId))
             }}
             className="flex items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition duration-150 ease-in-out"
           >
             <div className="flex-shrink-0 mr-4">
               <button className="p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                <img src={track.thumbnailUrl} className="h-6 w-6" alt={track.title} />
+                <img src={track.thumbnails[0].url} className="h-6 w-6" alt={track.title} />
                 <span className="sr-only">Play {track.title}</span>
               </button>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-900 truncate">{track.title}</p>
-              <p className="text-sm text-gray-500 truncate">{track.artists[0].name}</p>
+              <p className="text-sm text-gray-500 truncate">{track.author.name}</p>
             </div>
             <div className="ml-4 flex-shrink-0">
-              <span className="text-sm text-gray-500">{track.duration.totalSeconds}</span>
+              <span className="text-sm text-gray-500">{track.lengthSeconds}</span>
             </div>
           </li>
         ))}

@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type {Song as typeSong}  from '../types/song';
+import type { Song as typeSong } from '../types/song';
 import { getUser } from '../lib/auth';
 
 // Define the initial state
 type typeState = {
-    id: number | null,
-    data: typeSong | null,
-    status: 'idle' | 'loading' | 'succeeded' | 'failed',
-    error: string | null
+  id: number | null,
+  data: typeSong | null,
+  status: 'idle' | 'loading' | 'succeeded' | 'failed',
+  error: string | null
 };
 
 const initialState: typeState = {
@@ -25,29 +25,39 @@ export const fetchSongFromId = createAsyncThunk<typeSong, string>(
   'song/fetchSong',
   async (currentId, { rejectWithValue }) => {
     try {
+      console.log(currentId)
       const token = document.cookie?.split(';')?.map(i => i.trim())?.find(i => i.startsWith('token='))?.split('=')[1] as string || '';
 
       const user = await getUser();
       if (user.error) throw new Error('Something went wrong while fetching the user');
       if (!user.isLoggedIn) throw new Error('Please log in to continue');
       const { data } = await axios.get(
-        `http://localhost:5000/video/info?url=https://www.youtube.com/watch?v=${currentId}&token=${token}`
+        `http://localhost:5000/video/info?id=${currentId}&token=${token}`, { headers: { "Authorization": "Bearer " + token } }
       );
       console.log(data.url)
       return data;
     } catch (err: any) {
-      
+
       // If axios or the async function fails, it will be caught here
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-export const fetchNextSong  = createAsyncThunk<typeSong, string>(
+export const fetchNextSong = createAsyncThunk<typeSong, string>(
   'song/fetchNext',
-  async (currentId) => {
-    const response = await axios.get(`http://localhost:5000/suggestions?youtubeId=${currentId}`);
-    return response.data;
+  async (currentId,{rejectWithValue}) => {
+    try {
+      const token = document.cookie?.split(';')?.map(i => i.trim())?.find(i => i.startsWith('token='))?.split('=')[1] as string || '';
+      const user = await getUser();
+      if (user.error) throw new Error('Something went wrong while fetching the user');
+      if (!user.isLoggedIn) throw new Error('Please log in to continue');
+      const response = await axios.get(`http://localhost:5000/video/next?id=${currentId}`, { headers: { "Authorization": "Bearer " + token } });
+      return response.data;
+    } catch (err:any) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+
+    }
   }
 );
 

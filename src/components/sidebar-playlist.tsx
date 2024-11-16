@@ -8,15 +8,7 @@ import { useEffect } from "react"
 import { useToast } from "../hooks/use-toast"
 import { Button } from "../components/ui/button"
 import { ToastAction } from "../components/ui/toast"
-type Song = {
-  id: string
-  name: string
-  artist: string
-  imageUrl: string
-  duration: string
-}
-
-
+import { type Song } from "../types/song"
 
 export function SidebarPlaylist() {
   const {toast } = useToast();
@@ -26,7 +18,7 @@ export function SidebarPlaylist() {
   const error = useSelector((state: RootState) => selectSongsError(state));
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchSongs('id'));
+      dispatch(fetchSongs());
     }
   }, [dispatch, status]);
   if (status === 'loading') return <div>
@@ -53,21 +45,21 @@ export function SidebarPlaylist() {
       <h2 className="text-xl font-bold mb-4">Playlist</h2>
       <ul className="space-y-2">
         {sampleSongs.map((song) => (
-          <li key={song.id} className="flex items-center space-x-2 hover:bg-gray-800 p-2 rounded">
+          <li key={song.videoId} className="flex items-center space-x-2 hover:bg-gray-800 p-2 rounded">
             <img  
-              src={song.imageUrl}
-              alt={`${song.name} album cover`}
+              src={song.thumbnails[0].url}
+              alt={`${song.title} album cover`}
               width={40}
               height={40}
               className="rounded"
             />
             <div className="flex-grow min-w-0">
-              <p className="text-sm font-medium truncate">{song.name}</p>
-              <p className="text-xs text-gray-400 truncate">{song.artist}</p>
+              <p className="text-sm font-medium truncate">{song.title}</p>
+              <p className="text-xs text-gray-400 truncate">{song.author.name}</p>
             </div>
             <span className="text-xs text-gray-400 flex items-center">
               <Clock className="w-3 h-3 mr-1" />
-              {song.duration}
+              {song.lengthSeconds}
             </span>
           </li>
         ))}
